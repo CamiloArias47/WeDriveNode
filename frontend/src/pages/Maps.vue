@@ -30,22 +30,20 @@ export default {
       var cameras = [],
           stations = [];
       
-      this.$store.state.acceptedmarkers.cameras.forEach(cam => {
+      this.$store.getters.getCamerasAproved.forEach(cam => {
         var markerCam = new google.maps.Marker({
           position: new google.maps.LatLng( cam.lat, cam.lng),
           title: "foto multa",
           map:map
         });
 
-        let picture = require("@/assets/img/cameras/"+cam.foto+"");
-
         var infowindow = new google.maps.InfoWindow({
           content: '<div>'+
                       '<ul>'+
                         '<li><b>ID:</b> '+cam.id+'</li>'+
-                        '<li><b>Velocidad:</b> '+cam.velocidad+'</li>'+
+                        '<li><b>Velocidad:</b> '+cam.velocidad_maxima+'</li>'+
                         '<li><b>Comentario:</b> '+cam.comentario+'</li>'+
-                        '<li><img src="'+picture+'" /></li>'+
+                        '<li><img src="'+cam.picture+'" width="200px" /></li>'+
                      ' </ul>'+
                    '</div>'
         });
@@ -57,28 +55,30 @@ export default {
         cameras.push(markerCam)
       });
 
-      this.$store.state.acceptedmarkers.stations.forEach(station => {
+      this.$store.getters.getStationsAproved.forEach(station => {
+        console.log('Somting else..')
         var markerStation = new google.maps.Marker({
           position: new google.maps.LatLng( station.lat, station.lng),
           title: station.name,
           map:map
         });
 
-        let picture = require("@/assets/img/estaciones/"+station.foto+"");
-
         var infowindow = new google.maps.InfoWindow({
           content: '<div>'+
                       '<ul>'+
                         '<li><b>ID:</b> '+station.id+'</li>'+
-                        '<li><b>nombre:</b> '+station.nombre+'</li>'+
                         '<li><b>Comentario:</b> '+station.comentario+'</li>'+
-                        '<li><img src="'+picture+'" /></li>'+
+                        '<li><b>Corriente:</b> '+station.precio_galon_corriente+'</li>'+
+                        '<li><b>Extra:</b> '+station.precio_galon_extra+'</li>'+
+                        '<li><b>ACPM:</b> '+station.precio_galon_acpm+'</li>'+
+                        '<li><b>Gas:</b> '+station.precio_metro_cubico_gas+'</li>'+
+                        '<li><img src="'+station.picture+'" /></li>'+
                      ' </ul>'+
                    '</div>'
         });
 
         markerStation.addListener('click', function() {
-          infowindow.open(map, markerCam);
+          infowindow.open(map, markerStation);
         });
 
         stations.push(markerStation)
@@ -134,16 +134,29 @@ export default {
   },
   mounted() {
     var _this = this;
-    this.$store.state.loader.load().then( google => {
-        navigator.geolocation.getCurrentPosition(position => {
-            var startLocation = {
-                lat: position.coords.latitude, 
-                long: position.coords.longitude
-            } 
-            _this.$store.commit('setCenterMap',new google.maps.LatLng(startLocation.lat, startLocation.long) )
-            _this.initMap(google);
-        })
-    });
+    function loadGM(){
+      _this.$store.state.loader.load().then( google => {
+          navigator.geolocation.getCurrentPosition(position => {
+              var startLocation = {
+                  lat: position.coords.latitude, 
+                  long: position.coords.longitude
+              } 
+              _this.$store.commit('setCenterMap',new google.maps.LatLng(startLocation.lat, startLocation.long) )
+              _this.initMap(google);
+          })
+      });
+    }
+
+    //verificar si almenos hay una camara o estacion, s no hacer la peticion a la api
+    if(this.$store.getters.getCamerasNoAproved.length == 0 || this.$store.getters.getStationsNoAproved.length == 0){
+      this.$store.dispatch('getCameras')
+        .then(cameras => this.$store.dispatch('getStations') )
+        .then(stations => { loadGM() })
+    }
+    else { 
+      loadGM() 
+    }
+
   }
 };
 </script>

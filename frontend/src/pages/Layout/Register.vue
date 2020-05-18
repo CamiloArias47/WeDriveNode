@@ -23,12 +23,14 @@
             placeholder="Email"
             v-model="form.email"
           />
+          <p class="mensaje">{{ mensaje1 }}</p>
           <input
             type="password"
             :class="{ error: validaPassword }"
             placeholder="Contraseña"
             v-model="form.password"
           />
+          <p class="mensaje">{{ mensaje2 }}</p>
           <input
             type="password"
             :class="{ error: verificaPaswordIguales }"
@@ -67,18 +69,22 @@ export default {
         email: "",
         password: "",
         password2: ""
-      }
+      },
+      mensaje1: "",
+      mensaje2: ""
     };
   },
   methods: {
     sendForm() {
       if (this.validaType()) {
         axios.post(this.$store.getters.getRouteAPI + this.$store.getters.getRegisterUser,{
-          first_name :  this.form.firstName,
+                first_name :  this.form.firstName,
 	        last_name:    this.form.lastName,
 	        username :    this.form.email,
 	        email :       this.form.email,
-	        password :    this.form.password2
+	        password :    this.form.password2,
+		is_staff : false,
+		is_active: true
         })
         .then(response => {
           console.log(response);
@@ -94,6 +100,17 @@ export default {
               alert("Problemas internos")
              }
         })
+      }else {
+        if(this.validaPassword) {
+         this.mensaje1 = "la contraseña debe tener mínimo una mayúscula, una minúscula y un numero"
+        }else {
+          this.mensaje1 = ""
+        }
+        if(this.verificaPaswordIguales) {
+          this.mensaje2 = "las contraseñas no coinciden"
+        }else {
+          this.mensaje2 = ""
+        }
       }
     },
     validaType() {
@@ -106,7 +123,7 @@ export default {
       } else {
         return false;
       }
-    }
+    },
   },
   computed: {
     loggedIn(){
@@ -134,7 +151,7 @@ export default {
       } else {
         return true;
       }
-    },
+    }
   }
 }
 </script>
@@ -158,7 +175,7 @@ export default {
 .divlogin .container .contenido {
   width: 100%;
   max-width: 300px;
-  max-height: 600px;
+  max-height: 700px;
   background: rgba(255, 255, 255, .9);
   padding: 0 20px 20px 20px;
   display: inline-block;
@@ -219,6 +236,11 @@ export default {
   color: black;
   font-size: 20px;
 } 
+.divlogin .container .contenido .mensaje {
+  margin: 0px;
+  color: red;
+  font-weight: lighter;
+}
 #logotipo {
   margin: 0px;
 }

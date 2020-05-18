@@ -11,7 +11,7 @@
           <div class="md-layout-item md-small-size-100 md-size-50">
             <md-field>
               <label>Nombre</label>
-              <md-input v-model="firstname" type="text"></md-input>
+              <md-input v-model="name" type="text"></md-input>
             </md-field>
           </div>
           <div class="md-layout-item md-small-size-100 md-size-50">
@@ -23,19 +23,37 @@
           <div class="md-layout-item md-small-size-100 md-size-100">
             <md-field>
               <label>Email</label>
-              <md-input v-model="emailadress" type="email"></md-input>
+              <md-input v-model="mail" type="email"></md-input>
             </md-field>
           </div>
-          <div class="md-layout-item md-small-size-100 md-size-100">
-              <md-field>
-               <label>Foto</label>
-               <md-file v-model="picture" accept="image/*"></md-file>
+           <div class="md-layout-item md-small-size-100 md-size-50">
+             <md-field> <label>Crear items sin verificación</label>
+              <br>
+              <md-input class="caja" type="checkbox" v-model="trust">Activar</md-input>
             </md-field>
           </div>
-      
-          <div class="md-layout-item md-size-100 text-right">
-            <md-button class="md-raised md-success">Actualizar Perfil</md-button>
+          <div class="md-layout-item md-small-size-100 md-size-50">
+            <md-field>  <label>Administrador</label>
+              <br>
+              <md-input class="caja" type="checkbox" v-model="administrator">Activar</md-input>
+            </md-field>
           </div>
+          <div class="md-layout-item md-small-size-100 md-size-50">
+            <md-field>  <label>Estado</label>
+              <br>
+              <md-input class="caja" type="checkbox" v-model="active">Activo</md-input>
+            </md-field>
+          </div>
+          <div class="md-layout-item md-small-size-100 md-size-50">
+          </div>
+          <div class="md-layout">              
+            <div class="md-layout-item md-small-size-50 md-size-45">
+            </div>
+            <div class="md-layout-item md-small-size-50 md-size-55 text-right">
+              <md-button to="/app/usuarios" class= "md-raised md-success" data-background-color="red">Cancelar</md-button>
+              <md-button class="md-raised md-success" data-background-color="blue" @click="sendForm"> Actualizar Perfil</md-button>
+            </div>
+          </div>            
         </div>
       </md-card-content>
     </md-card>
@@ -53,18 +71,62 @@ export default {
   },
   data() {
     return {
-      emailadress: "",
+      mail: "",
       lastname: "",
-      firstname: "",
+      name: "",
+      trust: false,
+      active: true,
+      administrator: false,
+      created : '',
+      picture : ''
     };
   },
   watch: {
       user(newVal) {
-          this.emailadress = newVal.mail;
-          this.lastname = newVal.lastname;
-          this.firstname = newVal.name;
+          this.id           = newVal.id;
+          this.mail        = newVal.mail;
+          this.lastname    = newVal.lastname;
+          this.name   = newVal.name;
+          this.trust     = newVal.trust;
+          this.active    = newVal.active;
+          this.created = newVal.created,
+          this.picture = newVal.picture,
+          this.administrator = newVal.administrator;
       }
+  },
+  methods:{
+    sendForm(){
+      this.$store.dispatch('updateUsuario',{
+        id            : this.id,
+        data :        {
+          mail    : this.mail,
+          name    : this.name,
+          lastname: this.lastname,
+          trust   : this.trust,
+          active  : this.active,
+          administrator  : this.administrator,
+          picture: this.picture,
+          created : this.created
+        }
+      }).then(response => {
+        console.log(response);
+      })
+      this.$router.push('/app/usuarios');
+    }
   }
 };
 </script>
-<style></style>
+<style>
+.title, .category {
+  color:red;
+  font-style: oblique;
+}
+
+.caja {
+  position: relative;
+  margin-left: 90%;
+  height: 10px;
+}
+
+
+</style>

@@ -1,19 +1,23 @@
 <template>
   <div>
-    <md-table v-model="users" :table-header-color="tableHeaderColor" md-sort="id" md-sort-order="asc">
+    <md-table v-model="usersProps" :table-header-color="tableHeaderColor" md-sort="id" md-sort-order="asc">
       <md-table-row slot="md-table-row" slot-scope="{ item }">
-        <md-table-cell md-label="Email" md-sort-by="id">{{ item.email }}</md-table-cell>
-        <md-table-cell md-label="Nombre" md-sort-by="nombre">{{ item.first_name }}</md-table-cell>
-        <md-table-cell md-label="Apellidos" md-sort-by="apellido">{{ item.last_name }}</md-table-cell>
-        <md-table-cell md-label="Estado" md-sort-by="estado">{{ item.is_active }}</md-table-cell>
-        <md-table-cell md-label="Administrador" md-sort-by="administrador">{{ item.is_staff }}</md-table-cell>
+        <md-table-cell md-label="Email" md-sort-by="id">{{ item.mail }}</md-table-cell>
+        <md-table-cell md-label="Nombre" md-sort-by="nombre">{{ item.name }}</md-table-cell>
+        <md-table-cell md-label="Apellidos" md-sort-by="apellido">{{ item.lastname }}</md-table-cell>
+        <md-table-cell md-label="Estado" md-sort-by="estado" v-if="item.active">Activo</md-table-cell>
+        <md-table-cell md-label="Estado" md-sort-by="estado" v-else>Inactivo</md-table-cell>
+        <md-table-cell md-label="Añadir sin autorización" md-sort-by="anadir" v-if="item.trust">Sí</md-table-cell>
+        <md-table-cell md-label="Añadir sin autorización" md-sort-by="anadir" v-else >No</md-table-cell>
+        <md-table-cell md-label="Administrador" md-sort-by="administrador" v-if="item.administrator">Sí</md-table-cell>
+        <md-table-cell md-label="Administrador" md-sort-by="administrador" v-else>No</md-table-cell>
         <md-table-cell md-label="Acciones">
-          <router-link :to="{ name: 'user', params: { userId: item.id }}" class="md-just-icon md-simple md-primary">
+          <router-link :to="{ name: 'Usuario', params: { userId: item.id }}" class="md-button md-just-icon md-simple md-primary">
             <md-icon>edit</md-icon>                     
             <md-tooltip md-direction="top">Actualizar</md-tooltip>
           </router-link>
           <md-button class="md-just-icon md-simple md-danger" v-on:click="confirmDelete(item)">
-            <md-icon>close</md-icon>
+            <md-icon>delete</md-icon>
             <md-tooltip md-direction="top">Eliminar</md-tooltip>
           </md-button>
         </md-table-cell>
@@ -61,3 +65,4 @@ export default {
   }
 };
 </script>
+

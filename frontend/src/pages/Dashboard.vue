@@ -50,7 +50,7 @@
 
           <template slot="content">
             <p class="category">Usuarios</p>
-            <h3 class="title">{{ totalUsers }}</h3>
+            <h3 class="title">{{ getTotalUsers }}</h3>
           </template>
 
           <template slot="footer">
@@ -70,9 +70,9 @@
           </template>
 
           <template slot="content">
-            <p class="category">Fotomultas</p>
+            <p class="category">Fotomultas Aprobadas</p>
             <h3 class="title">
-              {{ totalCameras }}
+              {{ getTotalCameras }}
             </h3>
           </template>
 
@@ -93,8 +93,8 @@
           </template>
 
           <template slot="content">
-            <p class="category">Estaciones</p>
-            <h3 class="title">{{ totalGasStation }}</h3>
+            <p class="category">Estaciones Aprobadas</p>
+            <h3 class="title">{{ getTotalStation }}</h3>
           </template>
 
           <template slot="footer">
@@ -115,7 +115,7 @@
 
           <template slot="content">
             <p class="category">Gasolina</p>
-            <h3 class="title">{{ avgGas }}</h3>
+            <h3 class="title">{{ getAvgGas }}</h3>
           </template>
 
           <template slot="footer">
@@ -137,7 +137,7 @@ import {
   ChartCard
 } from "@/components";
 
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -146,14 +146,17 @@ export default {
   },
   computed:{
     ...mapState({
-      totalCameras : 'totalCameras',
-      totalUsers : 'totalUsers',
-      totalGasStation : 'totalGasStation',
       avgGas : 'avgGas',
       usersRegisterdata : 'usersRegisterdata',
       stationsChart: 'stationsChart',
       camerasChart:'camerasChart'
-    })
+    }),
+    ...mapGetters([
+      'getTotalUsers',
+      'getTotalStation',
+      'getTotalCameras',
+      'getAvgGas'
+    ])
   },
   data() {
     return {
@@ -165,6 +168,16 @@ export default {
     
     this.$store.commit('setUserLineSmooth',conf);
     this.$store.commit('setStationsLineSmooth',conf);
+    
+    if(this.$store.state.usuarios.length == 0){
+      this.$store.dispatch('setUsuarios')
+    } 
+    if(this.$store.state.stations.length == 0){
+      this.$store.dispatch('getStations')
+    } 
+    if(this.$store.state.cameras.length == 0){
+      this.$store.dispatch('getCameras')
+    }
   }
 };
 </script>

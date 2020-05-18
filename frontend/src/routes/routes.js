@@ -51,7 +51,7 @@ const routes = [
       },
       {
         path: "dashboard",
-        name: "Dashboard",
+        name: "Reportes",
         component: Dashboard,
         meta:{
           //admin : true 
@@ -67,7 +67,7 @@ const routes = [
       },
       { 
         path: '/user/:userId', 
-        name: 'user',
+        name: 'Usuario',
         component: UserEdit 
       },
       {
