@@ -303,20 +303,25 @@ export const store = new Vuex.Store({
         },
        
         async getCameras(context){
-          let cameras = await axios.get("https://we-drive-api.herokuapp.com/api/v1.0/camara")
+          let cameras = await axios.get("http://localhost:3000/cameras/")
           console.log("Pidiendo camaras")
           context.commit('setCameras', cameras.data)
         },
 
+        async getAprobeCamera(context){
+          let aprovedCams = await axios.get('http://localhost:3000/aprovedcameras/');
+          console.log("Pidiendo camaras aprobadas", aprovedCams.data);
+        },
+
         async saveCamera(context, formData){
-          let response = await axios.post("https://we-drive-api.herokuapp.com/api/v1.0/camara/",formData)
+          let response = await axios.post("http://localhost:3000/camera/",formData)
           console.log("Guardando camara")
           context.commit('addCamera', response.data)
         },
 
         async updateCamera(context,updateData){
           console.log("UpdateCamera datos",updateData.id)
-          let response = await axios.put("https://we-drive-api.herokuapp.com/api/v1.0/camara/"+updateData.id+"/",updateData.data)
+          let response = await axios.put("http://localhost:3000/camera/"+updateData.id+"/",updateData.data)
           console.log("Actualizando camara")
           context.commit('updateCamera', {
             id:updateData.id, 
@@ -325,20 +330,20 @@ export const store = new Vuex.Store({
         },
 
         async getStations(context){
-          let stations = await axios.get("https://we-drive-api.herokuapp.com/api/v1.0/estacion/")
+          let stations = await axios.get("http://localhost:3000/stations/")
           console.log("Pidiendo estaciones")
           context.commit('setStations', stations.data)
         },
 
         async saveStation(context, formData){
-          let response = await axios.post("https://we-drive-api.herokuapp.com/api/v1.0/estacion/",formData)
+          let response = await axios.post("http://localhost:3000/station/",formData)
           console.log("Guardando estacion")
           context.commit('addStation', response.data)
         },
 
         async updateStation(context,updateData){
           console.log("Updatetation datos",updateData)
-          let response = await axios.put("https://we-drive-api.herokuapp.com/api/v1.0/estacion/"+updateData.id+"/",updateData.data)
+          let response = await axios.put("http://localhost:3000/station/"+updateData.id+"/",updateData.data)
           console.log("Actualizando estacion")
           context.commit('updateStation', {
             id:updateData.id, 
@@ -348,7 +353,7 @@ export const store = new Vuex.Store({
         
         retrieveToken(context, credentials){
           return new Promise(function(resolve,reject) {
-            axios.post('http://we-drive-api.herokuapp.com/api/login',{
+            axios.post('http://localhost:3000/login',{
             username: credentials.username, 
             password: credentials.password
           })

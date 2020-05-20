@@ -9,6 +9,7 @@ create table users(
 	active boolean default true,
 	administrator boolean default false,
 	trust boolean default false,
+	pass varchar(462),
 	created date,
 	CONSTRAINT primaryKey_idUser PRIMARY KEY(id)
 );
